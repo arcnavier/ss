@@ -14,6 +14,10 @@ function b64(s) {
   return Buffer.from(s).toString('base64');
 }
 
+function b64safe(s) {
+  return b64(s).replace(/=+$/, '');
+}
+
 class Shadowsocks {
   constructor(method, password, hostname, port) {
     this.method = method;
@@ -44,12 +48,20 @@ class ShadowsocksR extends Shadowsocks {
     super(method, pass, host, port);
     this.obfs = obfs;
     this.protocol = protocol;
+    this.params = {};
   }
 
   encodess() {
     var url = util.format('%s:%s:%s:%s:%s:%s/',
-      this.hostname, this.port, this.protocol, this.method, this.obfs, b64(this.password));
-    return 'ssr://' + b64(url);
+      this.hostname, this.port, this.protocol, this.method, this.obfs, b64safe(this.password));
+    var params = [];
+    Object.keys(this.params).forEach(function(element, key, _array) {
+      params.push(util.format('%s=%s', element, b64safe(this.params[element])))
+    }, this);
+    if (params) {
+      url += '?' + params.join('&');
+    }
+    return 'ssr://' + b64safe(url);
   }
 
   encodehtml() {
@@ -106,6 +118,8 @@ request(ssurl, function(err, res, body) {
 
     var ss = new ShadowsocksR(addr, port, protocol, method, obfs, pw);
     ss.name = n;
+    ss.params.remarks = n;
+    ss.params.group = 'ishadowx.net'
     servers.push(ss);
     subscribe += ss.encodess() + '\n';
   }
@@ -119,6 +133,6 @@ request(ssurl, function(err, res, body) {
     });
     fs.writeFileSync('README.md', output);
 
-    fs.writeFileSync('ssr.txt', b64(subscribe))
+    fs.writeFileSync('ssr.txt', b64safe(subscribe))
   });
 });
