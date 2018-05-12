@@ -1,0 +1,11 @@
+{
+  "name": "ss-catcher",
+  "description": "Find shadowsocks links",
+  "version": "0.0.1",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "moment-timezone": "^0.5.17",
+    "mustache": "^2.3.0",
+    "request": "^2.85.0"
+  }
+}
