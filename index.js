@@ -10,7 +10,7 @@ const common = require('./common');
 const b64 = common.b64;
 const b64safe = common.b64safe;
 
-const ssurl = 'https://fast.ishadowx.net'
+const ssurl = 'https://fast.ishadowx.net/'
 const nodes = ['jpa', 'jpb', 'jpc', 'usa', 'usb', 'usc', 'sga', 'sgb', 'sgc']
 const names = ['日本1', '日本2', '日本3', '美国1', '美国2', '美国3', '新加坡1', '新加坡2', '新加坡3']
 const ssrnodes = ['ssra', 'ssrb', 'ssrc']
@@ -34,6 +34,8 @@ request(ssurl, function(err, res, body) {
 
     var ss = new SS(method, pw, addr, port);
     ss.name = names[i];
+    ss.id = n;
+    ss.qrcode = ssurl + "img/qr/" + n + "xxoo.png"
     servers.push(ss);
   }
 
@@ -48,6 +50,8 @@ request(ssurl, function(err, res, body) {
 
     var ss = new SSR(addr, port, protocol, method, obfs, pw);
     ss.name = n;
+    ss.id = n;
+    ss.qrcode = "https://" + ssurl + "img/qr/" + n + "xxoo.png"
     ss.params.remarks = n;
     ss.params.group = 'ishadowx.net'
     servers.push(ss);
@@ -55,13 +59,13 @@ request(ssurl, function(err, res, body) {
   }
 
   // Render template
-  fs.readFile('README.mustache', function(err, data) {
+  fs.readFile('index.mustache', function(err, data) {
     if (err) { throw err; }
     var output = mustache.render(data.toString(), {
       'data': servers,
       'update': d.format('YYYY-MM-DD HH:mm:ss')
     });
-    fs.writeFileSync('README.md', output);
+    fs.writeFileSync('index.html', output);
 
     fs.writeFileSync('ssr.txt', b64safe(subscribe))
   });
