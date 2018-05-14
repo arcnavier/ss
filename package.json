@@ -1,5 +1,6 @@
 {
   "name": "ss-catcher",
+  "main": "./index.js",
   "description": "Find shadowsocks links",
   "version": "0.0.1",
   "dependencies": {
