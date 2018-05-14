@@ -22,6 +22,7 @@ request(ssurl, function(err, res, body) {
   const $ = cheerio.load(body);
   var d = moment().tz('Asia/Shanghai');
   var servers = [];
+  var ssrservers = [];
   var subscribe = '';
 
   // Retrieve information
@@ -51,10 +52,9 @@ request(ssurl, function(err, res, body) {
     var ss = new SSR(addr, port, protocol, method, obfs, pw);
     ss.name = n;
     ss.id = n;
-    ss.qrcode = "https://" + ssurl + "img/qr/" + n + "xxoo.png"
     ss.params.remarks = n;
     ss.params.group = 'ishadowx.net'
-    servers.push(ss);
+    ssrservers.push(ss);
     subscribe += ss.encodess() + '\n';
   }
 
@@ -63,6 +63,7 @@ request(ssurl, function(err, res, body) {
     if (err) { throw err; }
     var output = mustache.render(data.toString(), {
       'data': servers,
+      'datassr': ssrservers,
       'update': d.format('YYYY-MM-DD HH:mm:ss')
     });
     fs.writeFileSync('index.html', output);
