@@ -40,9 +40,10 @@
       <div class="card">
         <h5 class="card-header">{{ name }}</h5>
         <div class="card-body">
-          <pre>{{{encodecmd}}}</pre>
+          <pre id="target{{id}}">{{{encodecmd}}}</pre>
           <a class="card-link" href="#" data-toggle="collapse" data-target="#qrcode{{id}}">二维码</a>
           <a class="card-link" href="{{{encodess}}}">一键配置</a>
+          <a class="card-link noclick" href="#" data-clipboard-target="#target{{id}}">复制命令</a>
         </div>
 
         <div class="collapse card-body" id="qrcode{{id}}">
@@ -56,8 +57,9 @@
       <div class="card">
         <h5 class="card-header">{{ name }}</h5>
         <div class="card-body">
-          <pre>{{{encodecmd}}}</pre>
+          <pre id="target{{id}}">{{{encodecmd}}}</pre>
           <a class="card-link" href="{{{encodess}}}">一键配置</a>
+          <a class="card-link noclick" href="#" data-clipboard-target="#target{{id}}">复制命令</a>
         </div>
       </div>
       {{/datassr}}
@@ -70,5 +72,12 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.1/dist/clipboard.min.js"></script>
+    <script>
+      new ClipboardJS('.card-link');
+      $('.noclick').click(function(e){
+        e.preventDefault();
+      });
+    </script>
   </body>
 </html>
