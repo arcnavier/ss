@@ -4,8 +4,9 @@ const mustache = require('mustache');
 const fs = require('fs');
 const moment = require('moment-timezone');
 
-const SS = require('./shadowsocks').Shadowsocks;
-const SSR = require('./shadowsocks').ShadowsocksR;
+const shadowsocks = require('./shadowsocks')
+const SS = shadowsocks.Shadowsocks;
+const SSR = shadowsocks.ShadowsocksR;
 const common = require('./common');
 const b64 = common.b64;
 const b64safe = common.b64safe;
@@ -23,7 +24,7 @@ request(ssurl, function(err, res, body) {
   var d = moment().tz('Asia/Shanghai');
   var servers = [];
   var ssrservers = [];
-  var subscribe = '';
+  var subscribe = new shadowsocks.Subscribe();
 
   // Retrieve information
   for (var i = 0; i < nodes.length; i++) {
@@ -49,13 +50,15 @@ request(ssurl, function(err, res, body) {
     var protocol = 'auth_sha1_v4';
     var obfs = 'tls1.2_ticket_auth';
 
-    var ss = new SSR(addr, port, protocol, method, obfs, pw);
+    var ss = new SSR(addr, port, protocol, method, obfs, pw, {
+      remarks: n,
+      group: 'ishadowx.net'
+    });
     ss.name = n;
     ss.id = n;
-    ss.params.remarks = n;
-    ss.params.group = 'ishadowx.net'
+
     ssrservers.push(ss);
-    subscribe += ss.encodess() + '\n';
+    subscribe.push(ss);
   }
 
   // Render template
@@ -68,6 +71,6 @@ request(ssurl, function(err, res, body) {
     });
     fs.writeFileSync('index.html', output);
 
-    fs.writeFileSync('ssr.txt', b64safe(subscribe))
+    fs.writeFileSync('ssr.txt', subscribe.get());
   });
 });
