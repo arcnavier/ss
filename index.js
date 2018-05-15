@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 const mustache = require('mustache');
 const fs = require('fs');
 const moment = require('moment-timezone');
+const _ = require('underscore');
 
 const shadowsocks = require('./shadowsocks')
 const SS = shadowsocks.Shadowsocks;
@@ -41,6 +42,7 @@ request(ssurl, function(err, res, body) {
     servers.push(ss);
   }
 
+  // Parse SSR information
   for (var i = 0; i < ssrnodes.length; i++) {
     var n = ssrnodes[i];
     var pw = $('#pw' + n).html().trim();
@@ -61,6 +63,21 @@ request(ssurl, function(err, res, body) {
     subscribe.push(ss);
   }
 
+
+  // Check if the object has changed
+  var all_servers = servers.concat(ssrservers);
+  if (fs.existsSync('servers.json')) {
+    var s = require('./servers.json');
+    // Length has to be the same
+    // Objects has to be the same
+    if (s.length == all_servers.length && s.every(function (e, i) {
+      return _.isEqual(Object.entries(e), Object.entries(all_servers[i]));
+    })) {
+      return;
+    }
+  }
+  fs.writeFileSync('servers.json', JSON.stringify(all_servers));
+
   // Render template
   fs.readFile('index.mustache', function(err, data) {
     if (err) { throw err; }
@@ -71,6 +88,7 @@ request(ssurl, function(err, res, body) {
     });
     fs.writeFileSync('index.html', output);
 
+    // Write the subscribe file
     fs.writeFileSync('ssr.txt', subscribe.get());
   });
 });

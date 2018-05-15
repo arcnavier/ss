@@ -13,6 +13,8 @@ class Shadowsocks {
     this.hostname = hostname;
     this.port = port;
     this.params = params; // Unused in Shadowsocks
+
+    this.type = 'ss';
   }
 
   // Encode the url (original base64 url scheme) without base64
@@ -44,6 +46,8 @@ class ShadowsocksR extends Shadowsocks {
     super(method, pass, host, port, params);
     this.obfs = obfs;
     this.protocol = protocol;
+
+    this.type = 'ssr';
   }
 
   encodeurl() {
