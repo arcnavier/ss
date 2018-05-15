@@ -73,7 +73,7 @@ request(ssurl, function(err, res, body) {
     if (s.length == all_servers.length && s.every(function (e, i) {
       return _.isEqual(Object.entries(e), Object.entries(all_servers[i]));
     })) {
-      return;
+      process.exit(1);
     }
   }
   fs.writeFileSync('servers.json', JSON.stringify(all_servers));
